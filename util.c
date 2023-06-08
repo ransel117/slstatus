@@ -10,9 +10,7 @@
 
 char *argv0;
 
-static void
-verr(const char *fmt, va_list ap)
-{
+static void verr(const char *fmt, va_list ap) {
 	vfprintf(stderr, fmt, ap);
 
 	if (fmt[0] && fmt[strlen(fmt) - 1] == ':') {
@@ -23,9 +21,7 @@ verr(const char *fmt, va_list ap)
 	}
 }
 
-void
-warn(const char *fmt, ...)
-{
+void warn(const char *fmt, ...) {
 	va_list ap;
 
 	va_start(ap, fmt);
@@ -33,9 +29,7 @@ warn(const char *fmt, ...)
 	va_end(ap);
 }
 
-void
-die(const char *fmt, ...)
-{
+void die(const char *fmt, ...) {
 	va_list ap;
 
 	va_start(ap, fmt);
@@ -45,9 +39,7 @@ die(const char *fmt, ...)
 	exit(1);
 }
 
-static int
-evsnprintf(char *str, size_t size, const char *fmt, va_list ap)
-{
+static int evsnprintf(char *str, size_t size, const char *fmt, va_list ap) {
 	int ret;
 
 	ret = vsnprintf(str, size, fmt, ap);
@@ -63,9 +55,7 @@ evsnprintf(char *str, size_t size, const char *fmt, va_list ap)
 	return ret;
 }
 
-int
-esnprintf(char *str, size_t size, const char *fmt, ...)
-{
+int esnprintf(char *str, size_t size, const char *fmt, ...) {
 	va_list ap;
 	int ret;
 
@@ -76,9 +66,7 @@ esnprintf(char *str, size_t size, const char *fmt, ...)
 	return ret;
 }
 
-const char *
-bprintf(const char *fmt, ...)
-{
+const char *bprintf(const char *fmt, ...) {
 	va_list ap;
 	int ret;
 
@@ -89,16 +77,12 @@ bprintf(const char *fmt, ...)
 	return (ret < 0) ? NULL : buf;
 }
 
-const char *
-fmt_human(uintmax_t num, int base)
-{
+const char *fmt_human(uintmax_t num, int base) {
 	double scaled;
 	size_t i, prefixlen;
 	const char **prefix;
-	const char *prefix_1000[] = { "", "k", "M", "G", "T", "P", "E", "Z",
-	                              "Y" };
-	const char *prefix_1024[] = { "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei",
-	                              "Zi", "Yi" };
+	const char *prefix_1000[] = {"", "k",  "M",  "G",  "T",  "P",  "E",  "Z",  "Y"};
+	const char *prefix_1024[] = {"", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"};
 
 	switch (base) {
 	case 1000:
@@ -115,20 +99,18 @@ fmt_human(uintmax_t num, int base)
 	}
 
 	scaled = num;
-	for (i = 0; i < prefixlen && scaled >= base; i++)
-		scaled /= base;
+	for (i = 0; i < prefixlen && scaled >= base; i++) scaled /= base;
 
 	return bprintf("%.1f %s", scaled, prefix[i]);
 }
 
-int
-pscanf(const char *path, const char *fmt, ...)
-{
+int pscanf(const char *path, const char *fmt, ...) {
 	FILE *fp;
 	va_list ap;
 	int n;
 
-	if (!(fp = fopen(path, "r"))) {
+	fp = fopen(path, "r");
+    if (!fp) {
 		warn("fopen '%s':", path);
 		return -1;
 	}
